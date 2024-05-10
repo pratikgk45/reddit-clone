@@ -1,14 +1,15 @@
-'use client';
+import Feed from "@/Components/Feed";
+import PostBox from "@/Components/PostBox";
 
-import { Header } from "@/Components/Header";
-import { SessionProvider } from "next-auth/react";
-import { AppProps } from "next/app";
+export default function Home() {
 
-export default function Home({ pageProps }: AppProps) {
   return (
-    <SessionProvider session={pageProps?.session}>
-      <Header></Header>
-    </SessionProvider>
+    <div className="my-7 mx-auto max-w-5xl flex flex-col space-y-2">
+      <PostBox />
+
+      <div className="flex">
+        <Feed />
+      </div>
+    </div>
   );
 }
- 
