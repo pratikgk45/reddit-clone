@@ -16,23 +16,25 @@ export default function Post({ post }: { post: Post }) {
             </div>
 
             <div className="flex flex-col space-y-2">
-                <Link href={`subreddit/${post.subreddit.topic}`}>
-                    <div className="flex flex-col space-y-2">
-                        <div className="flex space-x-2 items-center">
-                            <Avatar seed={post.subreddit.topic}></Avatar>
-                            <p className="text-gray-400 text-sm">
-                                <span className="font-bold">r/{post.subreddit.topic}</span>
-                                &nbsp;• Posted by u/{post.username}
-                                &nbsp;• <ReactTimeago date={post.created_at} />
-                            </p>
-                        </div>
+                <div className="flex flex-col space-y-2">
+                    <div className="flex space-x-2 items-center">
+                        <Avatar seed={post.subreddit.topic}></Avatar>
+                        <p className="text-gray-400 text-sm">
+                            <Link href={`/subreddit/${post.subreddit.topic}`}>
+                                <span className="font-bold hover:text-blue-400">r/{post.subreddit.topic}</span>
+                            </Link>
+                            &nbsp;• Posted by u/{post.username}
+                            &nbsp;• <ReactTimeago date={post.created_at} />
+                        </p>
+                    </div>
+                    <Link href={`post/${post.id}`}>
                         <div className="font-bold text-lg">{ post.title }</div>
                         <div>{ post.body }</div>
                         <div className="w-full rounded-xl">
                             <img src={post.image} alt="" className="m-auto" />
                         </div>
-                    </div>
-                </Link>
+                    </Link>
+                </div>
 
 
                 <div className="flex space-x-4 text-gray-400">
