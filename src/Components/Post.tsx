@@ -16,7 +16,7 @@ export default function Post({ post }: { post: Post }) {
             </div>
 
             <div className="flex flex-col space-y-2">
-                <Link href={`subreddit/${post.subreddit_id}`}>
+                <Link href={`subreddit/${post.subreddit.topic}`}>
                     <div className="flex flex-col space-y-2">
                         <div className="flex space-x-2 items-center">
                             <Avatar seed={post.subreddit.topic}></Avatar>

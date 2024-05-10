@@ -6,16 +6,9 @@ import Post from "./Post";
 
 export default function Feed({ topic }: { topic: string; }) {
     let posts: Post[] = [];
+    const { data, error } = topic ? useQuery(GET_POSTS_BY_TOPIC, { variables: { topic } }): useQuery(GET_POSTS);
 
-    if (topic) {
-        const { data, error } = useQuery(GET_POSTS_BY_TOPIC, { variables: { topic } });
-
-        posts = data?.postListByTopic ?? [];
-    } else {
-        const { data, error } = useQuery(GET_POSTS);
-
-        posts = data?.postList ?? [];
-    }
+    posts = (topic ? data?.postListByTopic: data?.postList) ?? [];
 
     return (
         <div className="flex flex-col space-y-3">
