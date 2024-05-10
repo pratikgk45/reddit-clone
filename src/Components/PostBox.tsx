@@ -18,7 +18,7 @@ interface FormData {
     subreddit: string;
 }
 
-export default function PostBox({ subreddit_id }: { subreddit_id: string; }) {
+export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
     const { data: session } = useSession();
     const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
 

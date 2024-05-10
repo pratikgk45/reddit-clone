@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 export default function ParentProvider({
     children,
     pageProps
-  }: ComponentProps) {
+  }: ComponentProps<any>) {
 
     return (
         <ApolloProvider client={client}>
