@@ -32,7 +32,8 @@ export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
     const {
         register,
         handleSubmit,
-        watch
+        watch,
+        setValue
       } = useForm<FormData>({  defaultValues: { subreddit: subreddit_id } });
 
     if (!session) {
@@ -86,6 +87,11 @@ export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
             toast.success('Posted successfully 😊', {
                 id: notification
             });
+
+            setValue('title', '');
+            setValue('body', '');
+            setValue('image', '');
+            setValue('subreddit', '');
         } catch (error) {
             toast.error('Whoops, something went wrong 😕', {
                 id: notification
@@ -101,7 +107,7 @@ export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
 
             <form className="p-4 flex flex-1 flex-col space-y-2" onSubmit={onSubmit}>
                 <div className="flex flex-1 items-center space-x-3">
-                    <input type="text" placeholder={`Let's post something${subreddit_id && ' here'}...`}
+                    <input type="text" placeholder={`Let's post something...`}
                         className="bg-blue-50 p-2 outline-none rounded-md flex-1 border hover:border-orange-400"
                         {...register('title', { required: true })}
                     />

@@ -22,6 +22,7 @@ export const GET_POSTS = gql`
             username
             vote {
                 upvote
+                username
             }
             subreddit {
                 topic
@@ -48,6 +49,7 @@ export const GET_POSTS_BY_TOPIC = gql`
             username
             vote {
                 upvote
+                username
             }
             subreddit {
                 topic
@@ -74,6 +76,7 @@ export const GET_POST_BY_ID = gql`
             username
             vote {
                 upvote
+                username
             }
             subreddit {
                 topic
@@ -83,6 +86,17 @@ export const GET_POST_BY_ID = gql`
                 id
                 text
                 username
+            }
+        }
+    }
+`;
+
+export const GET_SUBREDDITS = gql`
+    query subredditList {
+        subredditList {
+            topic
+            post {
+                id
             }
         }
     }

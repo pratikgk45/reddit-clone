@@ -4,7 +4,7 @@ import { ArrowDownIcon, ArrowUpIcon, ChatBubbleBottomCenterIcon } from "@heroico
 import Avatar from "./Avatar";
 import ReactTimeago from "react-timeago";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 export default function Post({ post, allowComments }: { post: Post; allowComments: boolean }) {
     const { data: session } = useSession();
     const router = useRouter();
+    const [voteState, setVoteState] = useState<'nv' | 'uv' | 'dv'>('nv');
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const [addComment] = useMutation(ADD_COMMENT, {
         refetchQueries: [{ query: GET_POST_BY_ID, variables: { id: post.id } }]
@@ -39,27 +40,32 @@ export default function Post({ post, allowComments }: { post: Post; allowComment
     } = useForm<{ comment: string }>();
 
     const insertVote = async (upvote: boolean) => {
+        if (!session) {
+            toast.error('You will need to login first 🙂');
+            return;
+        }
+
         const username = session?.user?.name;
         
         const prevVote = post.vote.find(vote => vote.username === username);
 
+        if (prevVote?.upvote && upvote) {
+            return;
+        }
+
+        if (prevVote?.upvote === false && !upvote) {
+            return;
+        }
+
         if (prevVote) {
-            if (prevVote.upvote === upvote) {
-                await deleteVote({
-                    variables: {
-                        id: prevVote.id
-                    }
-                });
-            } else {
-                await updateVote({
-                    variables: {
-                        id: prevVote.id,
-                        username,
-                        post_id: post.id,
-                        upvote
-                    }
-                });
-            }
+            await updateVote({
+                variables: {
+                    id: prevVote.id,
+                    username,
+                    post_id: post.id,
+                    upvote
+                }
+            });
         } else {        
             await addVote({
                 variables: {
@@ -71,9 +77,16 @@ export default function Post({ post, allowComments }: { post: Post; allowComment
         }
     };
 
+    useEffect(() => {
+        const upvotes = post.vote.reduce((c, v) => (c + (v.upvote ? 1: -1)), 0);
+        const prevVote = post.vote.find(vote => vote.username === session?.user?.name);
+        const curState = prevVote ? (prevVote.upvote ? 'uv': 'dv'): 'nv';
+
+        setVoteState(curState);
+    }, [post]);
+
+
     const upvotes = post.vote.reduce((c, v) => (c + (v.upvote ? 1: -1)), 0);
-    const prevVote = post.vote.find(vote => vote.username === session?.user?.name);
-    const curState = prevVote ? (prevVote.upvote ? 'uv': 'dv'): 'nv';
 
     const insertComment = handleSubmit(async (formData) => {
         const notification = toast.loading('Posting your comment...');
@@ -94,9 +107,9 @@ export default function Post({ post, allowComments }: { post: Post; allowComment
     return (
         <div className="flex space-x-4 px-2 py-4 bg-white border cursor-pointer border-gray-100 shadom-sm rounded-md hover:border hover:border-gray-400">
             <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md text-gray-400 cursor-pointer">
-                <ArrowUpIcon className={`vote-button hover:text-green-600 ${(curState === 'uv') && 'text-green-600'}`} onClick={() => insertVote(true)} />
+                <ArrowUpIcon className={`vote-button hover:text-green-600 ${(voteState === 'uv') && 'text-green-600'}`} onClick={() => insertVote(true)} />
                 <p className="text-xs font-bold text-black cursor-default select-none">{ upvotes }</p>
-                <ArrowDownIcon className={`vote-button hover:text-red-600 ${(curState === 'dv') && 'text-red-600'}`} onClick={() => insertVote(false)} />
+                <ArrowDownIcon className={`vote-button hover:text-red-600 ${(voteState === 'dv') && 'text-red-600'}`} onClick={() => insertVote(false)} />
             </div>
 
             <div className="flex flex-1 flex-col space-y-2">
