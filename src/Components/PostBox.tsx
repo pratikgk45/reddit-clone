@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_POST, ADD_SUBREDDIT } from "../../graphql/mutation";
 import client from "../../apollo-client";
-import { GET_POSTS, GET_SUBREDDITS_BY_TOPIC } from "../../graphql/queries";
+import { GET_POSTS, GET_SUBREDDITS, GET_SUBREDDITS_BY_TOPIC } from "../../graphql/queries";
 import toast from "react-hot-toast";
 
 interface FormData {
@@ -24,7 +24,8 @@ export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
 
     const [addPost] = useMutation(ADD_POST, {
         refetchQueries: [
-            GET_POSTS, 'getPosts'
+            GET_POSTS, 'getPosts',
+            GET_SUBREDDITS
         ]
     });
     const [addSubreddit] = useMutation(ADD_SUBREDDIT);
