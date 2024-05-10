@@ -12,7 +12,7 @@ export default function Feed({ topic }: { topic: string; }) {
     return (
         <div className="flex flex-col space-y-3">
             {
-                posts.map(post => <Post key={post.id} post={post} />)
+                posts.map(post => <Post key={post.id} post={post} allowComments={false} />)
             }
         </div>
     )

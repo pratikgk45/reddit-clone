@@ -18,8 +18,8 @@ export function Header() {
                 <button type="submit" hidden></button>
             </form>
 
-            <div>
-                <div className="mx-5 space-x-2 items-center text-gray-500 hidden lg:inline-flex">
+            <div className="flex-1">
+                {/* <div className="mx-5 space-x-2 items-center text-gray-500 hidden lg:inline-flex">
                     <SparklesIcon className="header-icon" />
                     <GlobeAltIcon className="header-icon" />
                     <VideoCameraIcon className="header-icon" />
@@ -34,7 +34,7 @@ export function Header() {
 
                 <div className="mx-3 flex items-center text-gray-500 lg:hidden">
                     <Bars4Icon className="header-icon" />
-                </div>
+                </div> */}
             </div>
             
             <SignIn />

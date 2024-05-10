@@ -232,11 +232,10 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertComment(
+  addComment(
     username: String
     post_id: ID
     text: String
-    created_at: DateTime!
   ): Comment
     @dbquery(
       type: "postgresql"
@@ -364,10 +363,9 @@ type Mutation {
       dml: DELETE
       configuration: "postgresql_config"
     )
-  insertVote(
+  addVote(
     username: String
     post_id: ID
-    created_at: DateTime!
     upvote: Boolean
   ): Vote
     @dbquery(
@@ -379,7 +377,6 @@ type Mutation {
     )
   updateVote(
     id: ID!
-    created_at: DateTime
     post_id: ID
     upvote: Boolean
     username: String
@@ -389,7 +386,6 @@ type Mutation {
       schema: "public"
       query: """
       UPDATE "vote" SET
-        "created_at" = COALESCE($2, "created_at"),
         "post_id" = COALESCE($3, "post_id"),
         "upvote" = COALESCE($4, "upvote"),
         "username" = COALESCE($5, "username")

@@ -1,15 +1,6 @@
-type Comment = {
-    created_at: DateTime;
-    id: ID;
-    post: Post;
-    post_id: ID;
-    text: string;
-    username: string;
-}
-
 type Post = {
     body: string;
-    comment: Comment[];
+    comment: PostComment[];
     created_at: DateTime;
     id: ID;
     image: string;
@@ -18,6 +9,15 @@ type Post = {
     title: string;
     username: string;
     vote: Vote[];
+}
+
+type PostComment = {
+    created_at: DateTime;
+    id: ID;
+    post: Post;
+    post_id: ID;
+    text: string;
+    username: string;
 }
   
 type Subreddit = {
