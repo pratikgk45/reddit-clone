@@ -37,10 +37,13 @@ export function Header() {
 
             </div>
             
-            <Link href={"https://github.com/pratikgk45/reddit-clone"} target="_blank">
-                <CodeBracketIcon className="header-icon rounded-md" />
-            </Link>
-            <SignIn />
+            <div className="flex space-x-8 items-center">
+                <Link href={"https://github.com/pratikgk45/reddit-clone"} target="_blank"
+                    className="h-6 w-6 opacity-40 hover:opacity-100">
+                    <img src="/github-mark.png" alt="" />
+                </Link>
+                <SignIn />
+            </div>
         </div>
     )
 }

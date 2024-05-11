@@ -8,7 +8,7 @@ export default function SignIn() {
 
     if (session) {
         return (
-            <>
+            <div className="flex space-x-4 items-center">
                 <div 
                     data-tooltip-id="user-initials"
                     data-tooltip-place="bottom-end"
@@ -33,7 +33,7 @@ export default function SignIn() {
                         Log Out
                     </Tooltip>
                 </div>
-            </>
+            </div>
         );
     }
 

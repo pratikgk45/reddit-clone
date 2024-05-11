@@ -6,8 +6,9 @@ import client from "../../apollo-client";
 import { ComponentProps } from "react";
 import { Header } from "@/Components/Header";
 import { Toaster } from "react-hot-toast";
+import { EdgeStoreProvider } from "./EdgeStorageProvider";
 
-export default function ParentProvider({
+export default function RootProvider({
     children,
     pageProps
   }: ComponentProps<any>) {
@@ -15,12 +16,14 @@ export default function ParentProvider({
     return (
         <ApolloProvider client={client}>
             <SessionProvider session={pageProps?.session}>
-                <Toaster />
-                <div className="h-screen overflow-y-scroll bg-slate-200">
-                    <Header />
+                <EdgeStoreProvider>
+                    <Toaster />
+                    <div className="h-screen overflow-y-scroll bg-slate-200">
+                        <Header />
 
-                    {children}
-                </div>
+                        {children}
+                    </div>
+                </EdgeStoreProvider>
             </SessionProvider>
         </ApolloProvider>
     );

@@ -10,6 +10,7 @@ import { ADD_POST, ADD_SUBREDDIT } from "../../graphql/mutation";
 import client from "../../apollo-client";
 import { GET_POSTS, GET_SUBREDDITS, GET_SUBREDDITS_BY_TOPIC } from "../../graphql/queries";
 import toast from "react-hot-toast";
+import FileUpload from "./FileUpload";
 
 interface FormData {
     title: string;
@@ -20,7 +21,6 @@ interface FormData {
 
 export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
     const { data: session } = useSession();
-    const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
 
     const [addPost] = useMutation(ADD_POST, {
         refetchQueries: [
@@ -115,7 +115,6 @@ export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
 
                     {!!watch('title') && (
                         <>
-                            <PhotoIcon className={`h-6 text-gray-300 cursor-pointer ${imageBoxOpen && 'text-blue-500'}`} onClick={() => setImageBoxOpen(!imageBoxOpen)} />
                             {/* <LinkIcon className="h-6 text-gray-300" /> */}
                         </>
                     )}
@@ -128,18 +127,16 @@ export default function PostBox({ subreddit_id }: { subreddit_id?: string; }) {
                                 <textarea placeholder="Post content..." {...register('body')} className="flex-1 bg-blue-50 p-2 rounded-md outline-none" />
                             </div>
 
+                            <div className="flex items-center">
+                                <FileUpload updateFileUrl={(url) => setValue('image', url)} />
+                            </div>
+
                             {
                                 !subreddit_id && 
                                 <div className="flex items-center">
                                     <input type="text" placeholder="Subreddit e.g. Next.js" {...register('subreddit', { required: true })} className="rounded-md flex-1 bg-blue-50 p-2 outline-none" />
                                 </div>
                             }
-
-                            {imageBoxOpen && (
-                                <div className="flex items-center">
-                                    <input type="text" placeholder="Image Url" {...register('image')} className="flex-1 bg-blue-50 p-2 rounded-md outline-none" />
-                                </div>
-                            )}                        
                         </div>
 
                         <button

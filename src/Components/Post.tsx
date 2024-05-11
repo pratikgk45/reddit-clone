@@ -124,7 +124,7 @@ export default function Post({ post, allowComments }: { post: Post; allowComment
                         <div className="font-bold text-lg">{ post.title }</div>
                         <div>{ post.body }</div>
                         <div className="w-full rounded-xl">
-                            <img src={post.image} alt="" className="m-auto" />
+                            <img src={post.image} alt="" className="m-auto max-h-[400px]" />
                         </div>
                     </Link>
                 </div>
