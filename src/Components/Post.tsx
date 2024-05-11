@@ -49,23 +49,21 @@ export default function Post({ post, allowComments }: { post: Post; allowComment
         
         const prevVote = post.vote.find(vote => vote.username === username);
 
-        if (prevVote?.upvote && upvote) {
-            return;
-        }
-
-        if (prevVote?.upvote === false && !upvote) {
-            return;
-        }
-
         if (prevVote) {
-            await updateVote({
-                variables: {
-                    id: prevVote.id,
-                    username,
-                    post_id: post.id,
-                    upvote
-                }
-            });
+            if ((prevVote.upvote && upvote) || (!prevVote.upvote && !upvote)) {
+                await deleteVote({
+                    variables: {
+                        id: prevVote.id
+                    }
+                });
+            } else {
+                await updateVote({
+                    variables: {
+                        id: prevVote.id,
+                        upvote
+                    }
+                });
+            }
         } else {        
             await addVote({
                 variables: {
@@ -78,13 +76,11 @@ export default function Post({ post, allowComments }: { post: Post; allowComment
     };
 
     useEffect(() => {
-        const upvotes = post.vote.reduce((c, v) => (c + (v.upvote ? 1: -1)), 0);
         const prevVote = post.vote.find(vote => vote.username === session?.user?.name);
         const curState = prevVote ? (prevVote.upvote ? 'uv': 'dv'): 'nv';
 
         setVoteState(curState);
-    }, [post]);
-
+    }, [post, session]);
 
     const upvotes = post.vote.reduce((c, v) => (c + (v.upvote ? 1: -1)), 0);
 

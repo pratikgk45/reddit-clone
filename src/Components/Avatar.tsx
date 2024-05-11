@@ -2,13 +2,10 @@
 
 import { shapes } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
-import { useSession } from "next-auth/react";
 
-export default function Avatar({ seed, large }: Props) {
-    const { data: session } = useSession();
-
-    const image = session?.user?.image || createAvatar(shapes, {
-        seed: seed || session?.user?.name || 'pikachu'
+export default function Avatar({ seed, large, imageUrl }: Props) {
+    const image = imageUrl || createAvatar(shapes, {
+        seed: seed || 'pikachu'
     }).toDataUriSync();
 
     return (
@@ -23,4 +20,5 @@ export default function Avatar({ seed, large }: Props) {
 interface Props {
     seed?: string;
     large?: boolean;
+    imageUrl?: string | null;
 }

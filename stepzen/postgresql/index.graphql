@@ -386,9 +386,9 @@ type Mutation {
       schema: "public"
       query: """
       UPDATE "vote" SET
-        "post_id" = COALESCE($3, "post_id"),
-        "upvote" = COALESCE($4, "upvote"),
-        "username" = COALESCE($5, "username")
+        "post_id" = COALESCE($2, "post_id"),
+        "upvote" = COALESCE($3, "upvote"),
+        "username" = COALESCE($4, "username")
       WHERE
         "id" = $1
       RETURNING *

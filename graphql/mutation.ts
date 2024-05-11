@@ -80,9 +80,7 @@ export const ADD_VOTE = gql`
 export const UPDATE_VOTE = gql`
     mutation updateVote(
         $id: ID!
-        $post_id: ID
-        $upvote: Boolean
-        $username: String
+        $upvote: Boolean!
     ) {
         updateVote(
             id: $id
@@ -91,6 +89,7 @@ export const UPDATE_VOTE = gql`
             username: $username
         ) {
             id
+            upvote
         }
     }
 `;

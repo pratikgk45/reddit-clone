@@ -1,5 +1,4 @@
 import { Bars4Icon, BellAlertIcon, ChatBubbleOvalLeftEllipsisIcon, CodeBracketIcon, GlobeAltIcon, MagnifyingGlassIcon, PlusCircleIcon, PlusIcon, SparklesIcon, SpeakerWaveIcon, UserIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
 import SignIn from "./SignIn";
 import Link from "next/link";
 
@@ -8,7 +7,7 @@ export function Header() {
         <div className="sticky top-0 z-50 flex items-center space-x-4 bg-white px-4 py-2 shadow-sm">
             <div className="flex flex-1">
                 <Link className="relative h-12 w-20 cursor-pointer" href="/">
-                    <Image src="/reddit-logo.jpeg" layout="fill" alt="" objectFit="contain" />
+                    <img src="/reddit-logo.jpeg" alt="" />
                 </Link>
             </div>
 
@@ -39,7 +38,7 @@ export function Header() {
             </div>
             
             <Link href={"https://github.com/pratikgk45/reddit-clone"} target="_blank">
-                <CodeBracketIcon className="header-icon" />
+                <CodeBracketIcon className="header-icon rounded-md" />
             </Link>
             <SignIn />
         </div>

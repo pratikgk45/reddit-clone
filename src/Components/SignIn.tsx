@@ -1,13 +1,12 @@
 import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Tooltip } from "react-tooltip";
+import Avatar from "./Avatar";
 
 export default function SignIn() {
     const { data: session } = useSession();
 
     if (session) {
-        const initials = (session.user?.name ?? '').split(' ').map(word => word[0].toUpperCase()).join();
-
         return (
             <>
                 <div 
@@ -15,7 +14,7 @@ export default function SignIn() {
                     data-tooltip-place="bottom-end"
                     className="w-8 h-8 text-center items-center content-center font-medium 
                         bg-orange-500 text-white rounded-full cursor-default">
-                    <div>{initials}</div>
+                    <Avatar imageUrl={session?.user?.image} />
                 </div>
                 <Tooltip id="user-initials">
                     <div>
@@ -27,7 +26,7 @@ export default function SignIn() {
                     <ArrowRightStartOnRectangleIcon 
                         data-tooltip-id="log-out"
                         data-tooltip-place="bottom-end"
-                        className="header-icon" onClick={() => signOut()}
+                        className="header-icon rounded-md" onClick={() => signOut()}
                     />
 
                     <Tooltip id="log-out">

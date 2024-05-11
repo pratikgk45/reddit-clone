@@ -21,6 +21,7 @@ export const GET_POSTS = gql`
             title
             username
             vote {
+                id
                 upvote
                 username
             }
@@ -48,6 +49,7 @@ export const GET_POSTS_BY_TOPIC = gql`
             title
             username
             vote {
+                id
                 upvote
                 username
             }
@@ -75,6 +77,7 @@ export const GET_POST_BY_ID = gql`
             title
             username
             vote {
+                id
                 upvote
                 username
             }
