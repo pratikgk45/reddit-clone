@@ -88,6 +88,7 @@ export class EcsStack extends cdk.Stack {
       desiredCount: 1,
       assignPublicIp: true,
       serviceName: 'reddit-clone-service',
+      enableExecuteCommand: true,
     });
 
     const listener = alb.addListener('HttpListener', {
