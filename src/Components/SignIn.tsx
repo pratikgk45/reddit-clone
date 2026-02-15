@@ -40,21 +40,32 @@ export default function SignIn() {
   }
 
   return (
-    <div className="relative">
+    <>
       <button
         className="flex items-center bg-orange-600 px-5 py-2 rounded-3xl text-white hover:bg-orange-700"
-        onClick={() => setShowProviders(!showProviders)}
+        onClick={() => setShowProviders(true)}
       >
         Log In
       </button>
 
       {showProviders && (
-        <>
-          <div className="fixed inset-0 z-40" onClick={() => setShowProviders(false)} />
-          <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50 p-4">
-            <p className="text-sm text-gray-600 mb-3 text-center">Sign in to continue</p>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+          onClick={() => setShowProviders(false)}
+        >
+          <div
+            className="bg-white rounded-lg shadow-2xl p-6 w-96 max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold text-gray-800 mb-2 text-center">
+              Sign in to continue
+            </h2>
+            <p className="text-sm text-gray-500 mb-6 text-center">
+              Choose your preferred sign-in method
+            </p>
+
             <button
-              className="w-full mb-2 px-4 py-2.5 bg-[#FF4500] hover:bg-[#ff5722] text-white rounded-md font-medium flex items-center justify-center space-x-2 transition-colors"
+              className="w-full mb-3 px-4 py-3 bg-[#FF4500] hover:bg-[#ff5722] text-white rounded-md font-medium flex items-center justify-center space-x-2 transition-colors"
               onClick={() => {
                 setShowProviders(false);
                 signIn('reddit');
@@ -65,8 +76,9 @@ export default function SignIn() {
               </svg>
               <span>Continue with Reddit</span>
             </button>
+
             <button
-              className="w-full px-4 py-2.5 bg-white hover:bg-gray-50 text-gray-700 rounded-md font-medium flex items-center justify-center space-x-2 border border-gray-300 transition-colors"
+              className="w-full px-4 py-3 bg-white hover:bg-gray-50 text-gray-700 rounded-md font-medium flex items-center justify-center space-x-2 border border-gray-300 transition-colors"
               onClick={() => {
                 setShowProviders(false);
                 signIn('google');
@@ -93,8 +105,8 @@ export default function SignIn() {
               <span>Continue with Google</span>
             </button>
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
