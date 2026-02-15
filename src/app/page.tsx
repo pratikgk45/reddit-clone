@@ -1,8 +1,8 @@
 'use client';
 
-import Feed from "@/Components/Feed";
-import PostBox from "@/Components/PostBox";
-import TopCommunities from "@/Components/TopCommunities";
+import Feed from '@/Components/Feed';
+import PostBox from '@/Components/PostBox';
+import TopCommunities from '@/Components/TopCommunities';
 
 export default function Home() {
   return (
