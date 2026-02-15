@@ -2,6 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { RedditStack } from '../lib/reddit-stack';
+import { AppRunnerStack } from '../lib/apprunner-stack';
 
 const app = new cdk.App();
 
@@ -11,7 +12,7 @@ const region = process.env.CDK_DEFAULT_REGION || process.env.AWS_REGION || 'us-e
 
 const stackName = environment === 'production' ? 'RedditStack' : `RedditStack-${environment}`;
 
-new RedditStack(app, stackName, {
+const backendStack = new RedditStack(app, stackName, {
   environment,
   env: {
     account,
@@ -24,3 +25,26 @@ new RedditStack(app, stackName, {
     ManagedBy: 'CDK',
   },
 });
+
+// App Runner stack for frontend (only in production)
+if (environment === 'production') {
+  new AppRunnerStack(app, 'RedditAppRunnerStack', {
+    env: {
+      account,
+      region,
+    },
+    appsyncUrl: backendStack.api.graphqlUrl,
+    appsyncApiKey: backendStack.api.apiKey || '',
+    nextauthSecret: process.env.NEXTAUTH_SECRET || 'change-me-in-production',
+    redditClientId: process.env.REDDIT_CLIENT_ID || '',
+    redditClientSecret: process.env.REDDIT_CLIENT_SECRET || '',
+    googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    description: 'Reddit clone App Runner service',
+    tags: {
+      Environment: environment,
+      Project: 'RedditClone',
+      ManagedBy: 'CDK',
+    },
+  });
+}

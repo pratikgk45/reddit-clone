@@ -88,11 +88,16 @@ jobs:
 
       - name: CDK Deploy
         working-directory: ./infrastructure
-        run: cdk deploy --require-approval never --outputs-file outputs.json
+        run: cdk deploy --all --require-approval never --outputs-file outputs.json
         env:
           CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
           CDK_DEFAULT_REGION: ${{ env.AWS_REGION }}
           ENVIRONMENT: ${{ github.event.inputs.environment || 'production' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
       - name: Get Stack Outputs
         id: stack-outputs

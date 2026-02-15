@@ -11,6 +11,9 @@ export interface RedditStackProps extends cdk.StackProps {
 }
 
 export class RedditStack extends cdk.Stack {
+  public readonly api: appsync.GraphqlApi;
+  public readonly table: dynamodb.Table;
+
   constructor(scope: Construct, id: string, props?: RedditStackProps) {
     super(scope, id, props);
 
@@ -107,6 +110,10 @@ export class RedditStack extends cdk.Stack {
     // Create Resolvers
     this.createResolvers(api, dynamoDataSource);
     this.createFieldResolvers(api, dynamoDataSource);
+
+    // Store references
+    this.api = api;
+    this.table = table;
 
     // Outputs
     new cdk.CfnOutput(this, 'GraphQLAPIURL', {
