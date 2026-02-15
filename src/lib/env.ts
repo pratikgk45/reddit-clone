@@ -11,8 +11,8 @@ const BUILD_PLACEHOLDER_SECRET = 'build-placeholder-min-32-chars-do-not-use';
 
 const envSchema = z.object({
   // Public (exposed to browser)
-  NEXT_PUBLIC_APPSYNC_URL: z.string().url().optional(),
-  NEXT_PUBLIC_APPSYNC_API_KEY: z.string().optional(),
+  NEXT_PUBLIC_APPSYNC_URL: z.string().trim().url().optional().or(z.literal('')),
+  NEXT_PUBLIC_APPSYNC_API_KEY: z.string().trim().optional().or(z.literal('')),
   NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
 
   // Server-only; default allows build/CI to succeed; set real values for production
