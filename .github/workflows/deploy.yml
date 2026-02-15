@@ -88,9 +88,7 @@ jobs:
 
       - name: CDK Deploy
         working-directory: ./infrastructure
-        run: |
-          cdk deploy --all --require-approval never --outputs-file outputs.json \
-            --parameters RedditAppRunnerStack:GitHubConnectionArn=${{ secrets.APPRUNNER_CONNECTION_ARN }}
+        run: cdk deploy --all --require-approval never --outputs-file outputs.json
         env:
           CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
           CDK_DEFAULT_REGION: ${{ env.AWS_REGION }}

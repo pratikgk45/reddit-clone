@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { RedditStack } from '../lib/reddit-stack';
-import { AppRunnerStack } from '../lib/apprunner-stack';
+import { EcsStack } from '../lib/ecs-stack';
 
 const app = new cdk.App();
 
@@ -26,9 +26,9 @@ const backendStack = new RedditStack(app, stackName, {
   },
 });
 
-// App Runner stack for frontend (only in production)
+// ECS Fargate stack for frontend (only in production)
 if (environment === 'production') {
-  new AppRunnerStack(app, 'RedditAppRunnerStack', {
+  new EcsStack(app, 'RedditEcsStack', {
     env: {
       account,
       region,
@@ -40,7 +40,7 @@ if (environment === 'production') {
     redditClientSecret: process.env.REDDIT_CLIENT_SECRET || '',
     googleClientId: process.env.GOOGLE_CLIENT_ID || '',
     googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    description: 'Reddit clone App Runner service',
+    description: 'Reddit clone ECS Fargate service with ALB',
     tags: {
       Environment: environment,
       Project: 'RedditClone',
