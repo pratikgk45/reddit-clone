@@ -1,0 +1,16 @@
+## Query posts by topic using GSI1
+## GSI1PK = SUBREDDIT#topic, GSI1SK = POST#created_at
+
+{
+  "version": "2017-02-28",
+  "operation": "Query",
+  "index": "GSI1",
+  "query": {
+    "expression": "GSI1PK = :gsi1pk",
+    "expressionValues": {
+      ":gsi1pk": $util.dynamodb.toDynamoDBJson("SUBREDDIT#$ctx.arguments.topic")
+    }
+  },
+  "scanIndexForward": false
+}
+

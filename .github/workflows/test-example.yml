@@ -1,0 +1,42 @@
+name: Test Example Workflow
+
+# This is an example workflow showing how to test the setup
+# You can remove this file once everything is working
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  test-setup:
+    name: Test Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run validation
+        run: npm run validate
+
+      - name: Test infrastructure setup
+        working-directory: ./infrastructure
+        run: |
+          npm ci
+          npm run synth
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Summary
+        run: |
+          echo "✅ All checks passed!"
+          echo "Your setup is working correctly."
+

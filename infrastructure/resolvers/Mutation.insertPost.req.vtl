@@ -1,0 +1,28 @@
+## Create a post
+## PK = POST#id, SK = METADATA
+## GSI1PK = SUBREDDIT#topic (for querying by subreddit)
+## GSI1SK = POST#created_at (for sorting)
+
+#set($id = $util.autoId())
+#set($now = $util.time.nowISO8601())
+
+{
+  "version": "2017-02-28",
+  "operation": "PutItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("POST#$id"),
+    "SK": $util.dynamodb.toDynamoDBJson("METADATA")
+  },
+  "attributeValues": {
+    "id": $util.dynamodb.toDynamoDBJson($id),
+    "title": $util.dynamodb.toDynamoDBJson($ctx.arguments.title),
+    "body": $util.dynamodb.toDynamoDBJson($ctx.arguments.body),
+    "username": $util.dynamodb.toDynamoDBJson($ctx.arguments.username),
+    "subreddit_id": $util.dynamodb.toDynamoDBJson($ctx.arguments.subreddit_id),
+    "image": $util.dynamodb.toDynamoDBJson($ctx.arguments.image),
+    "created_at": $util.dynamodb.toDynamoDBJson($now),
+    "GSI1PK": $util.dynamodb.toDynamoDBJson("SUBREDDIT#$ctx.arguments.subreddit_id"),
+    "GSI1SK": $util.dynamodb.toDynamoDBJson("POST#$now")
+  }
+}
+

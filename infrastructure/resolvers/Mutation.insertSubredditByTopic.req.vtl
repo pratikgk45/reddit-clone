@@ -1,0 +1,24 @@
+## Create a subreddit
+## PK = SUBREDDIT#id, SK = METADATA
+## GSI2PK = TOPIC (for querying by topic)
+## GSI2SK = SUBREDDIT#id
+
+#set($id = $util.autoId())
+#set($now = $util.time.nowISO8601())
+
+{
+  "version": "2017-02-28",
+  "operation": "PutItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("SUBREDDIT#$id"),
+    "SK": $util.dynamodb.toDynamoDBJson("METADATA")
+  },
+  "attributeValues": {
+    "id": $util.dynamodb.toDynamoDBJson($id),
+    "topic": $util.dynamodb.toDynamoDBJson($ctx.arguments.topic),
+    "created_at": $util.dynamodb.toDynamoDBJson($now),
+    "GSI2PK": $util.dynamodb.toDynamoDBJson("$ctx.arguments.topic"),
+    "GSI2SK": $util.dynamodb.toDynamoDBJson("SUBREDDIT#$id")
+  }
+}
+

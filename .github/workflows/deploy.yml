@@ -1,0 +1,138 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '20.x'
+  AWS_REGION: 'us-east-1'
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy AWS Infrastructure
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: infrastructure/package-lock.json
+
+      - name: Install CDK dependencies
+        working-directory: ./infrastructure
+        run: npm ci
+
+      - name: Install CDK CLI
+        run: npm install -g aws-cdk
+
+      - name: CDK Bootstrap (if needed)
+        working-directory: ./infrastructure
+        run: |
+          cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }} || true
+        continue-on-error: true
+
+      - name: CDK Diff
+        working-directory: ./infrastructure
+        run: cdk diff || true
+
+      - name: CDK Deploy
+        working-directory: ./infrastructure
+        run: cdk deploy --require-approval never --outputs-file outputs.json
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ env.AWS_REGION }}
+          ENVIRONMENT: ${{ github.event.inputs.environment || 'production' }}
+
+      - name: Get Stack Outputs
+        id: stack-outputs
+        working-directory: ./infrastructure
+        run: |
+          API_URL=$(jq -r '.RedditStack.GraphQLAPIURL' outputs.json)
+          API_KEY=$(jq -r '.RedditStack.GraphQLAPIKey' outputs.json)
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+          echo "api_key=$API_KEY" >> $GITHUB_OUTPUT
+          echo "::notice::AppSync URL: $API_URL"
+
+      - name: Update GitHub Secrets (Optional)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Stack outputs available:"
+          echo "API URL: ${{ steps.stack-outputs.outputs.api_url }}"
+          echo "API Key: ${{ steps.stack-outputs.outputs.api_key }}"
+          # Uncomment to automatically update secrets:
+          # gh secret set NEXT_PUBLIC_APPSYNC_URL --body "${{ steps.stack-outputs.outputs.api_url }}"
+          # gh secret set NEXT_PUBLIC_APPSYNC_API_KEY --body "${{ steps.stack-outputs.outputs.api_key }}"
+
+  deploy-nextjs:
+    name: Deploy Next.js to Vercel
+    runs-on: ubuntu-latest
+    needs: deploy-infrastructure
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+        env:
+          NEXT_PUBLIC_APPSYNC_URL: ${{ secrets.NEXT_PUBLIC_APPSYNC_URL }}
+          NEXT_PUBLIC_APPSYNC_API_KEY: ${{ secrets.NEXT_PUBLIC_APPSYNC_API_KEY }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+        env:
+          NEXT_PUBLIC_APPSYNC_URL: ${{ secrets.NEXT_PUBLIC_APPSYNC_URL }}
+          NEXT_PUBLIC_APPSYNC_API_KEY: ${{ secrets.NEXT_PUBLIC_APPSYNC_API_KEY }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+
+      - name: Deployment Summary
+        run: |
+          echo "### 🚀 Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+

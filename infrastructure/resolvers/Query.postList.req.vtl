@@ -1,0 +1,15 @@
+## Query all posts - Scan for all POST# items
+## Note: For production, consider using a different pattern or pagination
+
+{
+  "version": "2017-02-28",
+  "operation": "Scan",
+  "filter": {
+    "expression": "begins_with(PK, :pk) AND SK = :sk",
+    "expressionValues": {
+      ":pk": $util.dynamodb.toDynamoDBJson("POST#"),
+      ":sk": $util.dynamodb.toDynamoDBJson("METADATA")
+    }
+  }
+}
+

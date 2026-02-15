@@ -1,0 +1,25 @@
+## Create a comment
+## PK = COMMENT#id, SK = METADATA
+## GSI4PK = POST#id, GSI4SK = COMMENT#created_at (for querying comments by post)
+
+#set($id = $util.autoId())
+#set($now = $util.time.nowISO8601())
+
+{
+  "version": "2017-02-28",
+  "operation": "PutItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("COMMENT#$id"),
+    "SK": $util.dynamodb.toDynamoDBJson("METADATA")
+  },
+  "attributeValues": {
+    "id": $util.dynamodb.toDynamoDBJson($id),
+    "post_id": $util.dynamodb.toDynamoDBJson($ctx.arguments.post_id),
+    "text": $util.dynamodb.toDynamoDBJson($ctx.arguments.text),
+    "username": $util.dynamodb.toDynamoDBJson($ctx.arguments.username),
+    "created_at": $util.dynamodb.toDynamoDBJson($now),
+    "GSI4PK": $util.dynamodb.toDynamoDBJson("POST#$ctx.arguments.post_id"),
+    "GSI4SK": $util.dynamodb.toDynamoDBJson("COMMENT#$now")
+  }
+}
+

@@ -1,0 +1,15 @@
+## Query subreddit by topic using GSI2
+## GSI2PK = TOPIC, GSI2SK = SUBREDDIT#id
+
+{
+  "version": "2017-02-28",
+  "operation": "Query",
+  "index": "GSI2",
+  "query": {
+    "expression": "GSI2PK = :gsi2pk",
+    "expressionValues": {
+      ":gsi2pk": $util.dynamodb.toDynamoDBJson("$ctx.arguments.topic")
+    }
+  }
+}
+

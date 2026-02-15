@@ -1,0 +1,13 @@
+## Single Table Design Pattern
+## PK = POST#id, SK = METADATA
+## For related data, we'll use batchGetItem
+
+{
+  "version": "2017-02-28",
+  "operation": "GetItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("POST#$ctx.arguments.id"),
+    "SK": $util.dynamodb.toDynamoDBJson("METADATA")
+  }
+}
+

@@ -1,0 +1,11 @@
+## Transform subreddits array
+#set($subreddits = [])
+#foreach($item in $ctx.result.items)
+  $util.qr($subreddits.add({
+    "id": "$item.id",
+    "topic": "$util.escapeJavaScript($item.topic)",
+    "created_at": "$item.created_at"
+  }))
+#end
+$util.toJson($subreddits)
+

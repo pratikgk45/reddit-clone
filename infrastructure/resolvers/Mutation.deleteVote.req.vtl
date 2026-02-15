@@ -1,0 +1,11 @@
+## Delete a vote
+
+{
+  "version": "2017-02-28",
+  "operation": "DeleteItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("VOTE#$ctx.arguments.id"),
+    "SK": $util.dynamodb.toDynamoDBJson("METADATA")
+  }
+}
+

@@ -1,0 +1,12 @@
+## Transform subreddit
+#set($subreddit = $ctx.result)
+#if($subreddit)
+  {
+    "id": "$subreddit.id",
+    "topic": "$util.escapeJavaScript($subreddit.topic)",
+    "created_at": "$subreddit.created_at"
+  }
+#else
+  null
+#end
+

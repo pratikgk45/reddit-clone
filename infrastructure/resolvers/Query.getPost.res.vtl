@@ -1,0 +1,19 @@
+## Transform the Post item and fetch related data
+## We'll need to make additional queries for comments, votes, and subreddit
+## For now, return the post and let field resolvers handle relationships
+
+#set($post = $ctx.result)
+#if($post)
+  {
+    "id": "$post.id",
+    "title": "$util.escapeJavaScript($post.title)",
+    "body": "$util.escapeJavaScript($post.body)",
+    "username": "$util.escapeJavaScript($post.username)",
+    "subreddit_id": "$post.subreddit_id",
+    "image": "$util.escapeJavaScript($post.image)",
+    "created_at": "$post.created_at"
+  }
+#else
+  null
+#end
+

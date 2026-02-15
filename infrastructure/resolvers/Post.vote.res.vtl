@@ -1,0 +1,15 @@
+## Transform votes array
+#set($votes = [])
+#foreach($item in $ctx.result.items)
+  #if($item.SK == "METADATA")
+    $util.qr($votes.add({
+      "id": "$item.id",
+      "post_id": "$item.post_id",
+      "upvote": $item.upvote,
+      "username": "$util.escapeJavaScript($item.username)",
+      "created_at": "$item.created_at"
+    }))
+  #end
+#end
+$util.toJson($votes)
+

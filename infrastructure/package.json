@@ -1,0 +1,37 @@
+{
+  "name": "reddit-aws-infrastructure",
+  "version": "1.0.0",
+  "description": "AWS CDK infrastructure for Reddit clone",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "deploy:dev": "ENVIRONMENT=dev cdk deploy",
+    "deploy:staging": "ENVIRONMENT=staging cdk deploy",
+    "deploy:prod": "ENVIRONMENT=production cdk deploy",
+    "synth": "cdk synth",
+    "synth:dev": "ENVIRONMENT=dev cdk synth",
+    "synth:staging": "ENVIRONMENT=staging cdk synth",
+    "synth:prod": "ENVIRONMENT=production cdk synth",
+    "diff": "cdk diff",
+    "destroy": "cdk destroy",
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write \"**/*.ts\""
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.100.0",
+    "constructs": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.0.0"
+  }
+}

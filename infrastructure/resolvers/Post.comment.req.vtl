@@ -1,0 +1,16 @@
+## Field resolver for Post.comment
+## Query comments for a post using GSI4
+
+{
+  "version": "2017-02-28",
+  "operation": "Query",
+  "index": "GSI4",
+  "query": {
+    "expression": "GSI4PK = :gsi4pk",
+    "expressionValues": {
+      ":gsi4pk": $util.dynamodb.toDynamoDBJson("POST#$ctx.source.id")
+    }
+  },
+  "scanIndexForward": false
+}
+

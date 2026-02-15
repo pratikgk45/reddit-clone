@@ -1,0 +1,15 @@
+## Field resolver for Post.vote
+## Query votes for a post using GSI3
+
+{
+  "version": "2017-02-28",
+  "operation": "Query",
+  "index": "GSI3",
+  "query": {
+    "expression": "GSI3PK = :gsi3pk",
+    "expressionValues": {
+      ":gsi3pk": $util.dynamodb.toDynamoDBJson("POST#$ctx.source.id")
+    }
+  }
+}
+

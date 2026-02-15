@@ -1,12 +1,5 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-
-const client = new ApolloClient({
-  uri: "https://banchukchoe.us-east-a.ibm.stepzen.net/api/worn-bobcat/__graphql",
-  headers: {
-    Authorization: `Apikey ${process.env.NEXT_PUBLIC_STEPZEN_API_KEY}`,
-    'Content-Type': 'application/json'
-  },
-  cache: new InMemoryCache(),
-});
-
-export default client;
+/**
+ * @deprecated Use src/lib/apollo-client.ts instead
+ * This file is kept for backward compatibility during migration
+ */
+export { default } from './src/lib/apollo-client';

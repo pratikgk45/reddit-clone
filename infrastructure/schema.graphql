@@ -1,0 +1,80 @@
+type Comment {
+  created_at: AWSDateTime!
+  id: ID!
+  post_id: ID
+  text: String
+  username: String
+}
+
+type Post {
+  body: String
+  comment: [Comment!]
+  created_at: AWSDateTime!
+  id: ID!
+  image: String
+  subreddit: Subreddit
+  subreddit_id: ID
+  title: String
+  username: String
+  vote: [Vote!]
+}
+
+type Subreddit {
+  created_at: AWSDateTime!
+  id: ID!
+  topic: String
+  post: [Post!]
+}
+
+type Vote {
+  created_at: AWSDateTime!
+  id: ID!
+  post_id: ID
+  upvote: Boolean
+  username: String
+}
+
+type Query {
+  post(id: ID!): Post
+  postList: [Post!]!
+  postListByTopic(topic: String!): [Post!]!
+  subredditList: [Subreddit!]!
+  subredditsByTopic(topic: String!): [Subreddit!]!
+}
+
+type Mutation {
+  insertPost(
+    title: String!
+    body: String
+    subreddit_id: ID!
+    username: String!
+    image: String
+  ): Post!
+  
+  insertSubredditByTopic(topic: String!): Subreddit!
+  
+  addComment(
+    username: String!
+    post_id: ID!
+    text: String!
+  ): Comment!
+  
+  addVote(
+    username: String!
+    post_id: ID!
+    upvote: Boolean!
+  ): Vote!
+  
+  updateVote(
+    id: ID!
+    upvote: Boolean!
+  ): Vote!
+  
+  deleteVote(id: ID!): Vote!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
+

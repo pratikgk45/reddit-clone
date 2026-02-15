@@ -1,0 +1,12 @@
+## Field resolver for Post.subreddit
+## Get subreddit by ID
+
+{
+  "version": "2017-02-28",
+  "operation": "GetItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("SUBREDDIT#$ctx.source.subreddit_id"),
+    "SK": $util.dynamodb.toDynamoDBJson("METADATA")
+  }
+}
+

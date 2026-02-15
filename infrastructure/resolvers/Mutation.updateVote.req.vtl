@@ -1,0 +1,18 @@
+## Update a vote
+## First get the vote to find its PK, then update
+
+{
+  "version": "2017-02-28",
+  "operation": "UpdateItem",
+  "key": {
+    "PK": $util.dynamodb.toDynamoDBJson("VOTE#$ctx.arguments.id"),
+    "SK": $util.dynamodb.toDynamoDBJson("METADATA")
+  },
+  "update": {
+    "expression": "SET upvote = :upvote",
+    "expressionValues": {
+      ":upvote": $util.dynamodb.toDynamoDBJson($ctx.arguments.upvote)
+    }
+  }
+}
+

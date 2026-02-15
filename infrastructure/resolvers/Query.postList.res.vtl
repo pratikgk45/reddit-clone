@@ -1,0 +1,17 @@
+## Transform posts array
+#set($posts = [])
+#foreach($item in $ctx.result.items)
+  #if($item.SK == "METADATA")
+    $util.qr($posts.add({
+      "id": "$item.id",
+      "title": "$util.escapeJavaScript($item.title)",
+      "body": "$util.escapeJavaScript($item.body)",
+      "username": "$util.escapeJavaScript($item.username)",
+      "subreddit_id": "$item.subreddit_id",
+      "image": "$util.escapeJavaScript($item.image)",
+      "created_at": "$item.created_at"
+    }))
+  #end
+#end
+$util.toJson($posts)
+
