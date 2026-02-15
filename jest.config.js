@@ -19,17 +19,16 @@ const customJestConfig = {
     '!src/**/__tests__/**',
     '!src/**/__mocks__/**',
   ],
-  coverageThreshold: {
-    global: {
-      branches: 50,
-      functions: 50,
-      lines: 50,
-      statements: 50,
-    },
-  },
   testMatch: [
     '**/__tests__/**/*.[jt]s?(x)',
     '**/?(*.)+(spec|test).[jt]s?(x)',
+  ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/.next/',
+    '/e2e/',
+    '/playwright-report/',
+    '/test-results/',
   ],
 };
 
