@@ -2,7 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { RedditStack } from '../lib/reddit-stack';
-import { UnifiedAppStack } from '../lib/unified-app-stack';
+import { EcsStack } from '../lib/ecs-stack';
 
 const app = new cdk.App();
 
@@ -26,25 +26,22 @@ const backendStack = new RedditStack(app, stackName, {
   },
 });
 
-// Unified app stack (Portfolio + Reddit) - only in production
-if (environment === 'production') {
-  const unifiedStack = new UnifiedAppStack(app, 'UnifiedAppStack', {
-    env: { account, region },
-    appsyncUrl: backendStack.api.graphqlUrl,
-    appsyncApiKey: backendStack.api.apiKey || '',
-    nextauthSecret: process.env.NEXTAUTH_SECRET || 'change-me-in-production',
-    redditClientId: process.env.REDDIT_CLIENT_ID || '',
-    redditClientSecret: process.env.REDDIT_CLIENT_SECRET || '',
-    googleClientId: process.env.GOOGLE_CLIENT_ID || '',
-    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    domainName: process.env.DOMAIN_NAME,
-    description: 'Unified stack with Portfolio and Reddit Clone',
-    tags: {
-      Environment: environment,
-      Project: 'Unified',
-      ManagedBy: 'CDK',
-    },
-  });
+// ECS Stack for Reddit frontend
+const ecsStack = new EcsStack(app, 'RedditEcsStack', {
+  env: { account, region },
+  appsyncUrl: backendStack.api.graphqlUrl,
+  appsyncApiKey: backendStack.api.apiKey || '',
+  nextauthSecret: process.env.NEXTAUTH_SECRET || 'change-me-in-production',
+  redditClientId: process.env.REDDIT_CLIENT_ID || '',
+  redditClientSecret: process.env.REDDIT_CLIENT_SECRET || '',
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  description: 'Reddit Clone ECS Fargate deployment',
+  tags: {
+    Environment: environment,
+    Project: 'RedditClone',
+    ManagedBy: 'CDK',
+  },
+});
 
-  unifiedStack.addDependency(backendStack);
-}
+ecsStack.addDependency(backendStack);
