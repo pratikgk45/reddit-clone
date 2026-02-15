@@ -45,6 +45,7 @@ export class EcsStack extends cdk.Stack {
     const container = taskDefinition.addContainer('RedditContainer', {
       image: ecs.ContainerImage.fromAsset('..', {
         file: 'Dockerfile',
+        exclude: ['infrastructure', 'e2e', 'node_modules', '.git', '.next', 'playwright-report'],
       }),
       logging: ecs.LogDrivers.awsLogs({
         streamPrefix: 'reddit-clone',
