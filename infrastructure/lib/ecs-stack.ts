@@ -10,6 +10,7 @@ export interface EcsStackProps extends cdk.StackProps {
   appsyncUrl: string;
   appsyncApiKey: string;
   nextauthSecret: string;
+  nextauthUrl?: string;
   redditClientId: string;
   redditClientSecret: string;
   googleClientId: string;
@@ -35,6 +36,13 @@ export class EcsStack extends cdk.Stack {
       containerInsights: true,
     });
 
+    // Application Load Balancer
+    const alb = new elbv2.ApplicationLoadBalancer(this, 'RedditALB', {
+      vpc,
+      internetFacing: true,
+      loadBalancerName: 'reddit-clone-alb',
+    });
+
     // Task Definition
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'RedditTaskDef', {
       memoryLimitMiB: 2048,
@@ -55,6 +63,7 @@ export class EcsStack extends cdk.Stack {
         NODE_ENV: 'production',
         NEXT_PUBLIC_APPSYNC_URL: props.appsyncUrl,
         NEXT_PUBLIC_APPSYNC_API_KEY: props.appsyncApiKey,
+        NEXTAUTH_URL: props.nextauthUrl || `http://${alb.loadBalancerDnsName}`,
         NEXTAUTH_SECRET: props.nextauthSecret,
         REDDIT_CLIENT_ID: props.redditClientId,
         REDDIT_CLIENT_SECRET: props.redditClientSecret,
@@ -75,13 +84,6 @@ export class EcsStack extends cdk.Stack {
       desiredCount: 1,
       assignPublicIp: true,
       serviceName: 'reddit-clone-service',
-    });
-
-    // Application Load Balancer
-    const alb = new elbv2.ApplicationLoadBalancer(this, 'RedditALB', {
-      vpc,
-      internetFacing: true,
-      loadBalancerName: 'reddit-clone-alb',
     });
 
     const listener = alb.addListener('HttpListener', {
