@@ -19,6 +19,7 @@ export interface EcsStackProps extends cdk.StackProps {
 
 export class EcsStack extends cdk.Stack {
   public readonly loadBalancerUrl: cdk.CfnOutput;
+  public readonly alb: elbv2.ApplicationLoadBalancer;
 
   constructor(scope: Construct, id: string, props: EcsStackProps) {
     super(scope, id, props);
@@ -42,6 +43,9 @@ export class EcsStack extends cdk.Stack {
       internetFacing: true,
       loadBalancerName: 'reddit-clone-alb',
     });
+
+    // Store ALB reference
+    this.alb = alb;
 
     // Task Definition
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'RedditTaskDef', {

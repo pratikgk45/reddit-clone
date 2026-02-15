@@ -93,6 +93,7 @@ jobs:
           CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
           CDK_DEFAULT_REGION: ${{ env.AWS_REGION }}
           ENVIRONMENT: ${{ github.event.inputs.environment || 'production' }}
+          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}

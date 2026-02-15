@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { RedditStack } from '../lib/reddit-stack';
 import { EcsStack } from '../lib/ecs-stack';
+import { DomainStack } from '../lib/domain-stack';
 
 const app = new cdk.App();
 
@@ -28,7 +29,7 @@ const backendStack = new RedditStack(app, stackName, {
 
 // ECS Fargate stack for frontend (only in production)
 if (environment === 'production') {
-  new EcsStack(app, 'RedditEcsStack', {
+  const ecsStack = new EcsStack(app, 'RedditEcsStack', {
     env: {
       account,
       region,
@@ -47,4 +48,22 @@ if (environment === 'production') {
       ManagedBy: 'CDK',
     },
   });
+
+  // Domain stack (optional - only if DOMAIN_NAME is set)
+  if (process.env.DOMAIN_NAME) {
+    new DomainStack(app, 'RedditDomainStack', {
+      env: {
+        account,
+        region: 'us-east-1', // ACM certificates for CloudFront must be in us-east-1
+      },
+      domainName: process.env.DOMAIN_NAME,
+      albDnsName: ecsStack.alb.loadBalancerDnsName,
+      description: 'Reddit clone custom domain with Route 53 and CloudFront',
+      tags: {
+        Environment: environment,
+        Project: 'RedditClone',
+        ManagedBy: 'CDK',
+      },
+    });
+  }
 }
