@@ -91,6 +91,7 @@ export class EcsStack extends cdk.Stack {
 
     listener.addTargets('RedditTarget', {
       port: 3000,
+      protocol: elbv2.ApplicationProtocol.HTTP,
       targets: [service],
       healthCheck: {
         path: '/',
