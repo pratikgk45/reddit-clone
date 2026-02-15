@@ -54,10 +54,6 @@ export class EcsStack extends cdk.Stack {
       image: ecs.ContainerImage.fromAsset('..', {
         file: 'Dockerfile',
         exclude: ['infrastructure', 'e2e', 'node_modules', '.git', '.next', 'playwright-report'],
-        buildArgs: {
-          NEXT_PUBLIC_APPSYNC_URL: props.appsyncUrl,
-          NEXT_PUBLIC_APPSYNC_API_KEY: props.appsyncApiKey,
-        },
       }),
       logging: ecs.LogDrivers.awsLogs({
         streamPrefix: 'reddit-clone',

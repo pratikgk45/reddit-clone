@@ -14,13 +14,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build args for environment variables
-ARG NEXT_PUBLIC_APPSYNC_URL
-ARG NEXT_PUBLIC_APPSYNC_API_KEY
-
 ENV NEXT_TELEMETRY_DISABLED 1
-ENV NEXT_PUBLIC_APPSYNC_URL=$NEXT_PUBLIC_APPSYNC_URL
-ENV NEXT_PUBLIC_APPSYNC_API_KEY=$NEXT_PUBLIC_APPSYNC_API_KEY
+ENV NEXT_PUBLIC_APPSYNC_URL=https://owgpd5lhdfdfxmboqpt43neusi.appsync-api.us-east-1.amazonaws.com/graphql
+ENV NEXT_PUBLIC_APPSYNC_API_KEY=da2-mcwanpytujfihnhg2ts46u2roq
 
 RUN npm run build
 
