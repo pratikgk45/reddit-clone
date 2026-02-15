@@ -6,14 +6,18 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ErrorBoundary } from '@/Components/ErrorBoundary';
 
-// Mock console.error to avoid noise in test output
+// Suppress all console errors during these tests
 const originalError = console.error;
+const originalWarn = console.warn;
+
 beforeAll(() => {
   console.error = jest.fn();
+  console.warn = jest.fn();
 });
 
 afterAll(() => {
   console.error = originalError;
+  console.warn = originalWarn;
 });
 
 describe('ErrorBoundary', () => {
@@ -23,6 +27,15 @@ describe('ErrorBoundary', () => {
     }
     return <div>No error</div>;
   };
+
+  // Suppress React error boundary warnings for each test
+  beforeEach(() => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   it('renders children when there is no error', () => {
     render(
