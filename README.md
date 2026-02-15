@@ -1,92 +1,160 @@
 # Reddit Clone
 
-Personal full-stack Reddit-style app: Next.js, AWS AppSync, DynamoDB. Posts, comments, voting, subreddits, OAuth (Reddit/Google).
+Full-stack Reddit-style application built with Next.js, AWS AppSync, and DynamoDB. Features posts, comments, voting, subreddits, and OAuth authentication.
 
-## Tech stack
+## Tech Stack
 
-- **App:** Next.js 14, React 18, TypeScript, Tailwind, Apollo Client
-- **Backend:** AWS AppSync (GraphQL), DynamoDB (single-table), NextAuth
-- **Infra:** AWS CDK (TypeScript) in `infrastructure/`
+- **Frontend:** Next.js 14, React 18, TypeScript, Tailwind CSS, Apollo Client
+- **Backend:** AWS AppSync (GraphQL), DynamoDB (single-table design)
+- **Auth:** NextAuth.js with Reddit and Google OAuth
+- **Infrastructure:** AWS CDK (ECS Fargate, ALB, AppSync, DynamoDB)
+- **CI/CD:** GitHub Actions
 
-## Setup
+## Live Demo
 
-**1. Install and env**
+🔗 **http://reddit-clone-alb-999046169.us-east-1.elb.amazonaws.com**
 
-```bash
-npm install
-cp .env.example .env.local
-```
+## Features
 
-Edit `.env.local`: set `NEXTAUTH_URL`, `NEXTAUTH_SECRET` (32+ chars, e.g. `openssl rand -base64 32`), and optionally Reddit/Google OAuth. For AppSync, use the URL and API key from the infra deploy (step 2).
+- Create and browse posts with images
+- Upvote/downvote system
+- Nested comments
+- Subreddit communities
+- OAuth login (Reddit & Google)
+- Real-time updates via GraphQL subscriptions
+- Responsive design
 
-**2. Deploy AWS (first time)**
+## Local Development
 
-```bash
-cd infrastructure
-npm install
-cdk bootstrap   # once per account/region
-cdk deploy
-```
+### Prerequisites
 
-Put the stack outputs `GraphQLAPIURL` and `GraphQLAPIKey` into `.env.local` as `NEXT_PUBLIC_APPSYNC_URL` and `NEXT_PUBLIC_APPSYNC_API_KEY`.
+- Node.js 18+
+- AWS Account (for backend)
+- Reddit OAuth App ([create here](https://www.reddit.com/prefs/apps))
+- Google OAuth App ([create here](https://console.cloud.google.com/apis/credentials))
 
-**3. Run**
+### Setup
 
-```bash
-npm run dev
-```
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Open http://localhost:3000
+2. **Configure environment**
+   ```bash
+   cp .env.example .env.local
+   ```
+   
+   Edit `.env.local`:
+   ```env
+   # NextAuth
+   NEXTAUTH_URL=http://localhost:3000
+   NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
+   
+   # OAuth Providers
+   REDDIT_CLIENT_ID=<your-reddit-client-id>
+   REDDIT_CLIENT_SECRET=<your-reddit-client-secret>
+   GOOGLE_CLIENT_ID=<your-google-client-id>
+   GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+   
+   # AWS AppSync (from infrastructure deployment)
+   NEXT_PUBLIC_APPSYNC_URL=<your-appsync-url>
+   NEXT_PUBLIC_APPSYNC_API_KEY=<your-appsync-api-key>
+   ```
+
+3. **Deploy AWS infrastructure**
+   ```bash
+   cd infrastructure
+   npm install
+   cdk bootstrap  # first time only
+   cdk deploy
+   ```
+   
+   Copy the `GraphQLAPIURL` and `GraphQLAPIKey` outputs to your `.env.local`.
+
+4. **Run development server**
+   ```bash
+   npm run dev
+   ```
+   
+   Open http://localhost:3000
+
+## Deployment
+
+The app automatically deploys to AWS ECS Fargate when you push to `main`:
+
+1. **Configure GitHub Secrets** (Settings → Secrets → Actions):
+   ```
+   AWS_ACCESS_KEY_ID
+   AWS_SECRET_ACCESS_KEY
+   AWS_ACCOUNT_ID
+   AWS_REGION
+   NEXT_PUBLIC_APPSYNC_URL
+   NEXT_PUBLIC_APPSYNC_API_KEY
+   NEXTAUTH_URL
+   NEXTAUTH_SECRET
+   REDDIT_CLIENT_ID
+   REDDIT_CLIENT_SECRET
+   GOOGLE_CLIENT_ID
+   GOOGLE_CLIENT_SECRET
+   ```
+
+2. **Push to main**
+   ```bash
+   git push origin main
+   ```
+
+GitHub Actions will:
+- Run tests (lint, type-check, unit tests)
+- Deploy infrastructure (CDK)
+- Build and deploy Docker container to ECS
 
 ## Scripts
 
 | Command | Description |
-|--------|-------------|
-| `npm run dev` | Dev server |
+|---------|-------------|
+| `npm run dev` | Start development server |
 | `npm run build` | Production build |
-| `npm run start` | Run production build |
-| `npm run lint` | ESLint |
-| `npm run type-check` | TypeScript check |
-| `npm test` | Jest tests |
+| `npm start` | Run production build |
+| `npm run lint` | Run ESLint |
+| `npm run type-check` | TypeScript type checking |
+| `npm test` | Run Jest tests |
 
-## Deploying the app
+## Project Structure
 
-### Quick Start
-```bash
-# 1. Setup GitHub secrets
-./scripts/setup-github-secrets.sh
-
-# 2. Push to main (triggers automatic deployment)
-git push origin main
+```
+├── src/
+│   ├── app/              # Next.js app router pages
+│   ├── Components/       # React components
+│   ├── context/          # Context providers (Apollo, NextAuth)
+│   ├── lib/              # Apollo client, utilities
+│   └── types/            # TypeScript types
+├── infrastructure/       # AWS CDK stack
+│   ├── lib/
+│   │   ├── reddit-stack.ts    # AppSync + DynamoDB
+│   │   └── ecs-stack.ts       # ECS Fargate + ALB
+│   └── resolvers/        # VTL resolvers
+└── .github/workflows/    # CI/CD pipelines
 ```
 
-See [QUICKSTART.md](QUICKSTART.md) for step-by-step guide.
+## Architecture
 
-### Manual Deployment
-- **Build:** `npm run build` (works in CI without real secrets; uses placeholders for missing env).
-- **Production:** Set real `NEXTAUTH_URL` and `NEXTAUTH_SECRET` (32+ chars) on your host (Vercel, etc.). Set `NEXT_PUBLIC_APPSYNC_URL` and `NEXT_PUBLIC_APPSYNC_API_KEY` from your CDK stack.
+- **Frontend:** Next.js app running in ECS Fargate container
+- **API:** AWS AppSync GraphQL API with DynamoDB resolvers
+- **Database:** DynamoDB single-table design
+- **Load Balancer:** Application Load Balancer (ALB)
+- **Auth:** NextAuth.js with OAuth providers
 
-### CI/CD
-GitHub Actions automatically deploys on push to `main`:
-1. ✅ Runs tests (lint, type-check, unit, e2e)
-2. ✅ Deploys AWS infrastructure (CDK)
-3. ✅ Deploys frontend (Vercel)
+## OAuth Configuration
 
-See [.github/DEPLOYMENT.md](.github/DEPLOYMENT.md) for full documentation.
+### Reddit OAuth
+1. Go to https://www.reddit.com/prefs/apps
+2. Create app with callback: `<your-domain>/api/auth/callback/reddit`
 
-## Project layout
+### Google OAuth
+1. Go to https://console.cloud.google.com/apis/credentials
+2. Create OAuth client with callback: `<your-domain>/api/auth/callback/google`
 
-- `src/app` – Next.js app router pages and API routes
-- `src/Components` – React components
-- `src/context` – Providers (Apollo, NextAuth, EdgeStore)
-- `src/lib` – Apollo client, env validation (Zod)
-- `src/types` – TypeScript types and NextAuth augmentation
-- `infrastructure/` – CDK stack (AppSync, DynamoDB, resolvers)
-- `scripts/` – Setup and deploy helpers
+## License
 
-## What’s in this repo
-
-- **App:** Next.js app with GraphQL (Apollo) talking to AppSync; env validated in `src/lib/env.ts`; NextAuth session extended with `user.id`.
-- **Infra:** CDK stack for AppSync + DynamoDB single table; VTL resolvers in `infrastructure/resolvers/`; multi-env (dev/staging/production) via `ENVIRONMENT`.
-- **Tooling:** ESLint, Jest, Prettier, Husky; GitHub Actions for lint/type-check/build and optional CDK deploy.
-- **Build:** NextAuth types, Apollo error typing, env defaults for CI, test files excluded from main `tsconfig`, small ESLint/ErrorBoundary/PostBox fixes so `npm run build` passes.
+MIT
