@@ -2,8 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { RedditStack } from '../lib/reddit-stack';
-import { EcsStack } from '../lib/ecs-stack';
-import { DomainStack } from '../lib/domain-stack';
+import { UnifiedAppStack } from '../lib/unified-app-stack';
 
 const app = new cdk.App();
 
@@ -27,13 +26,10 @@ const backendStack = new RedditStack(app, stackName, {
   },
 });
 
-// ECS Fargate stack for frontend (only in production)
+// Unified app stack (Portfolio + Reddit) - only in production
 if (environment === 'production') {
-  const ecsStack = new EcsStack(app, 'RedditEcsStack', {
-    env: {
-      account,
-      region,
-    },
+  const unifiedStack = new UnifiedAppStack(app, 'UnifiedAppStack', {
+    env: { account, region },
     appsyncUrl: backendStack.api.graphqlUrl,
     appsyncApiKey: backendStack.api.apiKey || '',
     nextauthSecret: process.env.NEXTAUTH_SECRET || 'change-me-in-production',
@@ -41,13 +37,14 @@ if (environment === 'production') {
     redditClientSecret: process.env.REDDIT_CLIENT_SECRET || '',
     googleClientId: process.env.GOOGLE_CLIENT_ID || '',
     googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    description: 'Reddit clone ECS Fargate service with ALB',
+    domainName: process.env.DOMAIN_NAME,
+    description: 'Unified stack with Portfolio and Reddit Clone',
     tags: {
       Environment: environment,
-      Project: 'RedditClone',
+      Project: 'Unified',
       ManagedBy: 'CDK',
     },
   });
 
-  // Domain stack removed - using Squarespace DNS instead
+  unifiedStack.addDependency(backendStack);
 }
