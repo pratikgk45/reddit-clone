@@ -115,10 +115,10 @@ jobs:
       - name: Build Next.js app
         run: npm run build
         env:
-          NEXT_PUBLIC_APPSYNC_URL: ${{ secrets.NEXT_PUBLIC_APPSYNC_URL }}
-          NEXT_PUBLIC_APPSYNC_API_KEY: ${{ secrets.NEXT_PUBLIC_APPSYNC_API_KEY }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXT_PUBLIC_APPSYNC_URL: ${{ secrets.NEXT_PUBLIC_APPSYNC_URL || 'https://placeholder.appsync-api.us-east-1.amazonaws.com/graphql' }}
+          NEXT_PUBLIC_APPSYNC_API_KEY: ${{ secrets.NEXT_PUBLIC_APPSYNC_API_KEY || 'da2-placeholder' }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'build-placeholder-min-32-chars-do-not-use' }}
 
   infrastructure-test:
     name: Infrastructure Tests
