@@ -15,3 +15,8 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
+applications:
+  - appRoot: /
+    platform: WEB_COMPUTE
+    buildCommand: npm run build
+    startCommand: npm run start
