@@ -78,61 +78,15 @@ jobs:
           echo "api_key=$API_KEY" >> $GITHUB_OUTPUT
           echo "::notice::AppSync URL: $API_URL"
 
-      - name: Update GitHub Secrets (Optional)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "Stack outputs available:"
-          echo "API URL: ${{ steps.stack-outputs.outputs.api_url }}"
-          echo "API Key: ${{ steps.stack-outputs.outputs.api_key }}"
-          # Uncomment to automatically update secrets:
-          # gh secret set NEXT_PUBLIC_APPSYNC_URL --body "${{ steps.stack-outputs.outputs.api_url }}"
-          # gh secret set NEXT_PUBLIC_APPSYNC_API_KEY --body "${{ steps.stack-outputs.outputs.api_key }}"
-
-  deploy-nextjs:
-    name: Deploy Next.js to Vercel
-    runs-on: ubuntu-latest
-    needs: deploy-infrastructure
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Next.js app
-        run: npm run build
-        env:
-          NEXT_PUBLIC_APPSYNC_URL: ${{ secrets.NEXT_PUBLIC_APPSYNC_URL }}
-          NEXT_PUBLIC_APPSYNC_API_KEY: ${{ secrets.NEXT_PUBLIC_APPSYNC_API_KEY }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        if: ${{ secrets.VERCEL_TOKEN != '' }}
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-        env:
-          NEXT_PUBLIC_APPSYNC_URL: ${{ secrets.NEXT_PUBLIC_APPSYNC_URL }}
-          NEXT_PUBLIC_APPSYNC_API_KEY: ${{ secrets.NEXT_PUBLIC_APPSYNC_API_KEY }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-
       - name: Deployment Summary
         run: |
-          echo "### 🚀 Deployment Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Infrastructure Deployment Complete!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Environment**: ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next Steps:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Update GitHub secrets with AppSync URL and API Key" >> $GITHUB_STEP_SUMMARY
+          echo "2. Deploy frontend to your hosting platform" >> $GITHUB_STEP_SUMMARY
 
