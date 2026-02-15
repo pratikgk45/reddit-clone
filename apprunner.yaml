@@ -1,0 +1,31 @@
+version: 1.0
+runtime: nodejs20
+build:
+  commands:
+    build:
+      - npm ci
+      - npm run build
+run:
+  runtime-version: 20
+  command: npm run start
+  network:
+    port: 3000
+  env:
+    - name: NODE_ENV
+      value: production
+    - name: NEXT_PUBLIC_APPSYNC_URL
+      value: https://owgpd5lhdfdfxmboqpt43neusi.appsync-api.us-east-1.amazonaws.com/graphql
+    - name: NEXT_PUBLIC_APPSYNC_API_KEY
+      value: da2-mcwanpytujfihnhg2ts46u2roq
+    - name: NEXTAUTH_SECRET
+      value: pikapika
+    - name: NEXTAUTH_URL
+      value: https://placeholder.com
+    - name: REDDIT_CLIENT_ID
+      value: eHUkaknDr56SCYxPP_NQEA
+    - name: REDDIT_CLIENT_SECRET
+      value: GQUMeoVilaUoX2Xa5RVfn3H2bA0Z5A
+    - name: GOOGLE_CLIENT_ID
+      value: 1064224642084-t56k8vi944joh7iqk2ello7glgj4hh5p.apps.googleusercontent.com
+    - name: GOOGLE_CLIENT_SECRET
+      value: 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
