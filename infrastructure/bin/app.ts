@@ -49,21 +49,5 @@ if (environment === 'production') {
     },
   });
 
-  // Domain stack (optional - only if DOMAIN_NAME is set)
-  if (process.env.DOMAIN_NAME) {
-    new DomainStack(app, 'RedditDomainStack', {
-      env: {
-        account,
-        region: 'us-east-1', // ACM certificates for CloudFront must be in us-east-1
-      },
-      domainName: process.env.DOMAIN_NAME,
-      albDnsName: ecsStack.alb.loadBalancerDnsName,
-      description: 'Reddit clone custom domain with Route 53 and CloudFront',
-      tags: {
-        Environment: environment,
-        Project: 'RedditClone',
-        ManagedBy: 'CDK',
-      },
-    });
-  }
+  // Domain stack removed - using Squarespace DNS instead
 }
