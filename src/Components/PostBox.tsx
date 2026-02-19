@@ -76,6 +76,7 @@ export default function PostBox({ subreddit_id }: { subreddit_id?: string }) {
           title: formData.title,
           body: formData.body,
           subreddit_id: subreddit?.id || '',
+          subreddit_topic: subreddit?.topic || formData.subreddit,
           username: session.user?.name,
           image,
         },

@@ -47,6 +47,7 @@ type Mutation {
     title: String!
     body: String
     subreddit_id: ID!
+    subreddit_topic: String!
     username: String!
     image: String
   ): Post!

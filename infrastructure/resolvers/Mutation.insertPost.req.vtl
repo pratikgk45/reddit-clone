@@ -21,7 +21,7 @@
     "subreddit_id": $util.dynamodb.toDynamoDBJson($ctx.arguments.subreddit_id),
     "image": $util.dynamodb.toDynamoDBJson($ctx.arguments.image),
     "created_at": $util.dynamodb.toDynamoDBJson($now),
-    "GSI1PK": $util.dynamodb.toDynamoDBJson("SUBREDDIT#$ctx.arguments.subreddit_id"),
+    "GSI1PK": $util.dynamodb.toDynamoDBJson("SUBREDDIT#$ctx.arguments.subreddit_topic"),
     "GSI1SK": $util.dynamodb.toDynamoDBJson("POST#$now")
   }
 }

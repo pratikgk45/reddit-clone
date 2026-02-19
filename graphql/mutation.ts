@@ -5,6 +5,7 @@ export const ADD_POST = gql`
     $title: String!
     $body: String!
     $subreddit_id: ID!
+    $subreddit_topic: String!
     $username: String!
     $image: String!
   ) {
@@ -12,6 +13,7 @@ export const ADD_POST = gql`
       title: $title
       body: $body
       subreddit_id: $subreddit_id
+      subreddit_topic: $subreddit_topic
       username: $username
       image: $image
     ) {
