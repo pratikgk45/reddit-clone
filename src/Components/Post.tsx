@@ -22,7 +22,7 @@ export default function Post({ post, allowComments }: { post: PostType; allowCom
   const { data: session } = useSession();
   const router = useRouter();
   const [voteState, setVoteState] = useState<'nv' | 'uv' | 'dv'>('nv');
-  const [isCommentVisible, setIsCommentVisible] = useState(false);
+  const [isCommentVisible, setIsCommentVisible] = useState(allowComments);
   const [addComment] = useMutation(ADD_COMMENT, {
     refetchQueries: [{ query: GET_POST_BY_ID, variables: { id: post.id } }],
   });
