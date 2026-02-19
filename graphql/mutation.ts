@@ -37,7 +37,7 @@ export const ADD_SUBREDDIT = gql`
 `;
 
 export const ADD_COMMENT = gql`
-  mutation addComment($username: String, $post_id: ID, $text: String) {
+  mutation addComment($username: String!, $post_id: ID!, $text: String!) {
     addComment(username: $username, post_id: $post_id, text: $text) {
       created_at
       id
@@ -49,16 +49,20 @@ export const ADD_COMMENT = gql`
 `;
 
 export const ADD_VOTE = gql`
-  mutation addVote($username: String, $post_id: ID, $upvote: Boolean) {
+  mutation addVote($username: String!, $post_id: ID!, $upvote: Boolean!) {
     addVote(username: $username, post_id: $post_id, upvote: $upvote) {
       id
+      created_at
+      post_id
+      upvote
+      username
     }
   }
 `;
 
 export const UPDATE_VOTE = gql`
   mutation updateVote($id: ID!, $upvote: Boolean!) {
-    updateVote(id: $id, post_id: $post_id, upvote: $upvote, username: $username) {
+    updateVote(id: $id, upvote: $upvote) {
       id
       upvote
     }
